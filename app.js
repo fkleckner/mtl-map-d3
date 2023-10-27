@@ -32,7 +32,7 @@ function updateStops(mtl, stops) {
     .attr("r", 4);
 }
 
-Promise.all([d3.json("data/geobase.json"), d3.json("data/stm.geojson")]).then(
+Promise.all([d3.json("data/geobase.json"), d3.json("stm.geojson")]).then(
   function (data) {
     console.log(data[0]);
     mtl = data[0];
