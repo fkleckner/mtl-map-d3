@@ -1,39 +1,44 @@
-let mtl = {};
-let stops = {};
-
-function updateMap() {
-  let projection = d3.geoEquirectangular().fitSize([800, 400], mtl);
+function updateMap(mtl) {
+  let projection = d3.geoMercator().fitSize([2400, 1200], mtl);
   let geoGenerator = d3.geoPath().projection(projection);
   let context = d3
     .select("#content g.map")
     .selectAll("path")
     .data(mtl.features);
 
-  context.enter().append("path").attr("d", geoGenerator);
+  context.join("path").attr("d", geoGenerator);
 }
 
-function updateStops() {
-  let svg = d3.select("#content");
-  let circles = svg.append("g").selectAll("circle").data(stops.features);
+function updateStops(mtl, stops) {
+  let projection = d3.geoMercator().fitSize([2400, 1200], mtl);
+  let geoGenerator = d3.geoPath().projection(projection);
+  let svg = d3
+    .select("#stops g.circles")
+    .selectAll("circle")
+    .data(stops.features)
+    .join("circle");
 
-  circles
-    .enter()
-    .append("circle")
+  svg
+    .attr("cx", function (d) {
+      console.log("here");
+      return projection(+d.geometry.coordinates)[0];
+    })
+    .attr("cy", function (d) {
+      console.log("here");
+      return projection(+d.geometry.coordinates)[1];
+    })
     .attr("fill", "yellow")
-    .style("opacity", 0.7) // Adjust the opacity as needed
-    .attr("r", 4); // Adjust the radius as needed
+    .style("opacity", 1) // Adjust the opacity as needed
+    .attr("r", 4);
 }
 
-Promise.all([
-  d3.json(
-    "https://raw.githubusercontent.com/codeforgermany/click_that_hood/main/public/data/montreal.geojson"
-  ),
-  d3.json("stm.geojson"),
-]).then(function (data) {
-  console.log(data[0]);
-  mtl = data[0];
-  console.log(data[1]);
-  stops = data[1];
-  updateMap();
-  updateStops();
-});
+Promise.all([d3.json("data/geobase.json"), d3.json("data/stm.geojson")]).then(
+  function (data) {
+    console.log(data[0]);
+    mtl = data[0];
+    console.log(data[1]);
+    stops = data[1];
+    updateMap(mtl);
+    updateStops(mtl, stops);
+  }
+);
