@@ -1,5 +1,12 @@
+// get window size
+var w = window.innerWidth;
+var h = window.innerHeight;
+
+// dynamically allocate svg width and height
+d3.select("#content svg").attr("width", w).attr("height", h);
+
 function updateMap(mtl) {
-  let projection = d3.geoMercator().fitSize([2400, 1200], mtl);
+  let projection = d3.geoMercator().fitSize([w, h], mtl);
   let geoGenerator = d3.geoPath().projection(projection);
   let context = d3
     .select("#content g.map")
@@ -9,23 +16,27 @@ function updateMap(mtl) {
   context.join("path").attr("d", geoGenerator);
 }
 
+function createTestCircle() {
+  let svg = d3.select("#stops g.circles").append("circle");
+  svg.attr("cx", 100).attr("cy", 100).attr("fill", "yellow").attr("r", 50);
+}
+
 function updateStops(mtl, stops) {
-  let projection = d3.geoMercator().fitSize([2400, 1200], mtl);
+  let projection = d3.geoMercator().fitSize([w, h], mtl);
   let geoGenerator = d3.geoPath().projection(projection);
   let svg = d3
     .select("#stops g.circles")
     .selectAll("circle")
     .data(stops.features)
-    .join("circle");
+    .enter()
+    .append("circle");
 
   svg
     .attr("cx", function (d) {
-      console.log("here");
-      return projection(+d.geometry.coordinates)[0];
+      return projection(d.geometry.coordinates)[0];
     })
     .attr("cy", function (d) {
-      console.log("here");
-      return projection(+d.geometry.coordinates)[1];
+      return projection(d.geometry.coordinates)[1];
     })
     .attr("fill", "yellow")
     .style("opacity", 1) // Adjust the opacity as needed
@@ -39,6 +50,7 @@ Promise.all([d3.json("data/geobase.json"), d3.json("stm.geojson")]).then(
     console.log(data[1]);
     stops = data[1];
     updateMap(mtl);
-    updateStops(mtl, stops);
+    //updateStops(mtl, stops);
+    createTestCircle();
   }
 );
