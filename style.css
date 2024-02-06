@@ -1,10 +1,44 @@
-body {
+* {
+  margin: 0;
+  padding: 0;
   font-family: "Helvetica Neue", Helvetica, sans-serif;
-  font-size: 14px;
-  color: #333;
+  box-sizing: border-box;
 }
 
-#content .map path {
-  fill: rgb(58, 189, 84);
-  stroke: rgb(43, 40, 40);
+#content {
+  width: 100%;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #153677, #4e085f);
+  padding: 10px;
+}
+
+/* #content .map path {
+  fill: #808080;
+  stroke: #808080;
+} */
+/* #content .map path {
+  display: block;
+  cursor: pointer;
+  transition-property: all;
+  transition-duration: 5s;
+  transition-timing-function: ease-in-out;
+}
+
+#content .map path:hover {
+  scale: 10;
+} */
+
+#content .lines path {
+  fill: none;
+  stroke: #ff496c;
+}
+
+.tooltip {
+  position: absolute;
+  pointer-events: none;
+  background: none;
+  font-size: x-large;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: white;
+  font-weight: bold;
 }
